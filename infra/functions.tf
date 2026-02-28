@@ -10,6 +10,11 @@ resource "azurerm_storage_account" "functions" {
   tags = local.tags
 }
 
+resource "azurerm_storage_container" "deployment" {
+  name               = "app-package"
+  storage_account_id = azurerm_storage_account.functions.id
+}
+
 resource "azurerm_service_plan" "functions" {
   name                = "${local.prefix}-asp-01"
   resource_group_name = azurerm_resource_group.main.name
@@ -27,7 +32,7 @@ resource "azurerm_function_app_flex_consumption" "main" {
   service_plan_id     = azurerm_service_plan.functions.id
 
   storage_container_type      = "blobContainer"
-  storage_container_endpoint  = azurerm_storage_account.functions.primary_blob_endpoint
+  storage_container_endpoint  = "${azurerm_storage_account.functions.primary_blob_endpoint}${azurerm_storage_container.deployment.name}"
   storage_authentication_type = "SystemAssignedIdentity"
 
   runtime_name    = "node"

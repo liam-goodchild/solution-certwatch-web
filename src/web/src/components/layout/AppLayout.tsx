@@ -2,13 +2,42 @@ import { Link, Outlet } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 
 export function AppLayout() {
-  const { user, loading } = useAuth();
+  const { user, loading, error } = useAuth();
 
-  if (loading) return <div style={{ padding: '2rem' }}>Loading...</div>;
+  if (loading) {
+    return (
+      <div style={{ padding: '2rem', fontFamily: 'system-ui, sans-serif' }}>Loading...</div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div style={{ padding: '2rem', fontFamily: 'system-ui, sans-serif', textAlign: 'center', marginTop: '4rem' }}>
+        <h2>Authentication Error</h2>
+        <p style={{ color: '#666' }}>{error}</p>
+        <a
+          href="/.auth/login/aad"
+          style={{ display: 'inline-block', marginTop: '1rem', padding: '0.75rem 1.5rem', background: '#1a1a2e', color: '#fff', textDecoration: 'none', borderRadius: '4px' }}
+        >
+          Try signing in
+        </a>
+      </div>
+    );
+  }
 
   if (!user) {
-    window.location.href = '/login';
-    return null;
+    return (
+      <div style={{ padding: '2rem', fontFamily: 'system-ui, sans-serif', textAlign: 'center', marginTop: '4rem' }}>
+        <h1>CertWatch</h1>
+        <p style={{ color: '#666', marginBottom: '1.5rem' }}>Track your certification renewals and get reminders before they expire.</p>
+        <a
+          href="/.auth/login/aad"
+          style={{ display: 'inline-block', padding: '0.75rem 1.5rem', background: '#1a1a2e', color: '#fff', textDecoration: 'none', borderRadius: '4px', fontSize: '1rem' }}
+        >
+          Sign in with Microsoft
+        </a>
+      </div>
+    );
   }
 
   return (
