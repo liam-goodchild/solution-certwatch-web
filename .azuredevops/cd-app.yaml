@@ -16,15 +16,15 @@ parameters:
 variables:
   ${{ if eq(parameters.environment, 'Prod') }}:
     environmentCode: prd
-    functionAppName: sh-certwatch-prd-uks-func-01
-    staticWebAppName: sh-certwatch-prd-uks-swa-01
-    resourceGroupName: sh-certwatch-prd-uks-rg-01
+    functionAppName: sh-app-prd-uks-cw-func-01
+    staticWebAppName: sh-app-prd-uks-cw-stapp-01
+    resourceGroupName: sh-app-prd-uks-cw-rg-01
     serviceConnectionName: sh-sc-certwatch
   ${{ else }}:
     environmentCode: dev
-    functionAppName: sh-certwatch-dev-uks-func-01
-    staticWebAppName: sh-certwatch-dev-uks-swa-01
-    resourceGroupName: sh-certwatch-dev-uks-rg-01
+    functionAppName: sh-app-dev-uks-cw-func-01
+    staticWebAppName: sh-app-dev-uks-cw-stapp-01
+    resourceGroupName: sh-app-dev-uks-cw-rg-01
     serviceConnectionName: sh-sc-certwatch
 
 stages:
