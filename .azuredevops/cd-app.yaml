@@ -90,13 +90,14 @@ stages:
                     package: '$(Pipeline.Workspace)/api/api.zip'
                     deploymentMethod: zipDeploy
 
-  # Stage 3: Build frontend
-  - stage: BuildWeb
-    displayName: 'Build Web'
-    dependsOn: []
+  # Stage 3: Build & Deploy Static Web App
+  - stage: DeployWeb
+    displayName: 'Build & Deploy Web'
+    dependsOn: DeployAPI
+    condition: succeeded()
     jobs:
-      - job: Build
-        displayName: 'Vite production build'
+      - job: BuildAndDeploy
+        displayName: 'Build & Deploy Static Web App'
         steps:
           - checkout: self
 
@@ -110,51 +111,27 @@ stages:
             workingDirectory: src/web
 
           - script: npm run build
-            displayName: 'Build'
+            displayName: 'Vite build'
             workingDirectory: src/web
 
-          - task: PublishBuildArtifacts@1
-            displayName: 'Publish web artifact'
+          - task: AzureCLI@2
+            displayName: 'Get SWA Deployment Token'
             inputs:
-              PathtoPublish: 'src/web/dist'
-              ArtifactName: web
+              azureSubscription: $(serviceConnectionName)
+              scriptType: bash
+              scriptLocation: inlineScript
+              inlineScript: |
+                set -euo pipefail
+                TOKEN=$(az staticwebapp secrets list \
+                  --name "$(staticWebAppName)" \
+                  --resource-group "$(resourceGroupName)" \
+                  --query "properties.apiKey" -o tsv)
+                echo "##vso[task.setvariable variable=SWA_DEPLOYMENT_TOKEN;issecret=true]$TOKEN"
 
-  # Stage 4: Deploy frontend to Static Web App
-  - stage: DeployWeb
-    displayName: 'Deploy Web'
-    dependsOn:
-      - BuildWeb
-      - DeployAPI
-    condition: and(succeeded('BuildWeb'), succeeded('DeployAPI'))
-    jobs:
-      - deployment: Deploy
-        displayName: 'Deploy to Static Web App'
-        environment: ${{ parameters.environment }}
-        strategy:
-          runOnce:
-            deploy:
-              steps:
-                - download: current
-                  artifact: web
-
-                - task: AzureCLI@2
-                  displayName: 'Get SWA Deployment Token'
-                  inputs:
-                    azureSubscription: $(serviceConnectionName)
-                    scriptType: bash
-                    scriptLocation: inlineScript
-                    inlineScript: |
-                      set -euo pipefail
-                      TOKEN=$(az staticwebapp secrets list \
-                        --name "$(staticWebAppName)" \
-                        --resource-group "$(resourceGroupName)" \
-                        --query "properties.apiKey" -o tsv)
-                      echo "##vso[task.setvariable variable=SWA_DEPLOYMENT_TOKEN;issecret=true]$TOKEN"
-
-                - task: AzureStaticWebApp@0
-                  displayName: 'Deploy Static Web App'
-                  inputs:
-                    azure_static_web_apps_api_token: $(SWA_DEPLOYMENT_TOKEN)
-                    app_location: '$(Pipeline.Workspace)/web'
-                    output_location: ''
-                    skip_app_build: true
+          - task: AzureStaticWebApp@0
+            displayName: 'Deploy Static Web App'
+            inputs:
+              azure_static_web_apps_api_token: $(SWA_DEPLOYMENT_TOKEN)
+              app_location: 'src/web'
+              output_location: 'dist'
+              skip_app_build: true
