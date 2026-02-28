@@ -41,3 +41,13 @@ avm.tflint_module.merged.hcl
 
 # MacOS
 .DS_Store
+
+# Node.js
+node_modules/
+dist/
+
+# Azure Functions local settings (contains secrets)
+local.settings.json
+
+# Vite cache
+.vite/

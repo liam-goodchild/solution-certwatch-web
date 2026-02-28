@@ -3,16 +3,16 @@ locals {
     {
       # Required
       Environment  = var.environment == "prd" ? "Prod" : title(var.environment)
-      Criticality  = "PLACEHOLDER"
-      BusinessUnit = "PLACEHOLDER"
-      Owner        = "PLACEHOLDER@PLACEHOLDER.com"
-      CostCenter   = "PLACEHOLDER"
-      Application  = "PLACEHOLDER"
-      OpsTeam      = "PLACEHOLDER"
+      Criticality  = "Low"
+      BusinessUnit = "Personal"
+      Owner        = "admin@skyhaven.dev"
+      CostCenter   = "Personal"
+      Application  = "CertWatch"
+      OpsTeam      = "Personal"
 
       # Optional
-      Reposiotry = "PLACEHOLDER"
-      Project    = "PLACEHOLDER"
+      Repository = "solution-certwatch-core"
+      Project    = "Sky Haven"
     },
     var.tags
   )

@@ -1,0 +1,62 @@
+trigger: none
+
+pr:
+  branches:
+    include:
+      - main
+  paths:
+    include:
+      - 'src/**'
+
+pool:
+  vmImage: ubuntu-latest
+
+stages:
+  # Stage 1: Build and validate API
+  - stage: API
+    displayName: 'API — Build & Test'
+    jobs:
+      - job: BuildAPI
+        displayName: 'TypeScript build + tests'
+        steps:
+          - checkout: self
+
+          - task: NodeTool@0
+            displayName: 'Use Node.js 20'
+            inputs:
+              versionSpec: '20.x'
+
+          - script: npm ci
+            displayName: 'Install API dependencies'
+            workingDirectory: src/api
+
+          - script: npx tsc --noEmit
+            displayName: 'TypeScript type check'
+            workingDirectory: src/api
+
+          - script: npm test -- --passWithNoTests
+            displayName: 'Run tests'
+            workingDirectory: src/api
+
+  # Stage 2: Build and validate frontend
+  - stage: Web
+    displayName: 'Web — Build'
+    dependsOn: []
+    jobs:
+      - job: BuildWeb
+        displayName: 'Vite production build'
+        steps:
+          - checkout: self
+
+          - task: NodeTool@0
+            displayName: 'Use Node.js 20'
+            inputs:
+              versionSpec: '20.x'
+
+          - script: npm ci
+            displayName: 'Install web dependencies'
+            workingDirectory: src/web
+
+          - script: npm run build
+            displayName: 'Vite build'
+            workingDirectory: src/web

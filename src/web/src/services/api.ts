@@ -1,0 +1,59 @@
+import type { Certification, CreateCertificationRequest, UpdateCertificationRequest } from '../types/certification';
+import type { UserProfile, ReminderPreferences } from '../types/user';
+
+const BASE_URL = '/api/v1';
+
+async function getAuthToken(): Promise<string | null> {
+  try {
+    const res = await fetch('/.auth/me');
+    if (!res.ok) return null;
+    const data = await res.json() as { clientPrincipal?: { accessToken?: string } };
+    return data.clientPrincipal?.accessToken ?? null;
+  } catch {
+    return null;
+  }
+}
+
+async function request<T>(path: string, init?: RequestInit): Promise<T> {
+  const token = await getAuthToken();
+  const headers: Record<string, string> = {
+    'Content-Type': 'application/json',
+    ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    ...(init?.headers as Record<string, string> ?? {}),
+  };
+
+  const res = await fetch(`${BASE_URL}${path}`, { ...init, headers });
+
+  if (res.status === 204) return undefined as unknown as T;
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({ error: res.statusText })) as { error?: string };
+    throw new Error(err.error ?? `HTTP ${res.status}`);
+  }
+  return res.json() as Promise<T>;
+}
+
+export const api = {
+  users: {
+    getProfile: () => request<UserProfile>('/users/me'),
+    updateProfile: (body: Partial<UserProfile>) =>
+      request<UserProfile>('/users/me', { method: 'PUT', body: JSON.stringify(body) }),
+  },
+
+  certifications: {
+    list: () => request<Certification[]>('/certifications'),
+    create: (body: CreateCertificationRequest) =>
+      request<Certification>('/certifications', { method: 'POST', body: JSON.stringify(body) }),
+    getById: (id: string) => request<Certification>(`/certifications/${id}`),
+    update: (id: string, body: UpdateCertificationRequest) =>
+      request<Certification>(`/certifications/${id}`, { method: 'PUT', body: JSON.stringify(body) }),
+    remove: (id: string) => request<void>(`/certifications/${id}`, { method: 'DELETE' }),
+    sync: (id: string) =>
+      request<{ status: string }>(`/certifications/${id}/sync`, { method: 'POST' }),
+  },
+
+  reminders: {
+    getPreferences: () => request<ReminderPreferences>('/reminders/preferences'),
+    updatePreferences: (body: Partial<ReminderPreferences>) =>
+      request<ReminderPreferences>('/reminders/preferences', { method: 'PUT', body: JSON.stringify(body) }),
+  },
+};
