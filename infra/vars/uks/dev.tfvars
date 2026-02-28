@@ -2,7 +2,10 @@
 # Generic
 #########################################
 environment = "dev"
-location    = "uksouth"
+location                = "uksouth"
+project                 = "sh"
+solution                = "app"
+service                 = "cw"
 
 tags = {}
 

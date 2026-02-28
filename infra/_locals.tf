@@ -21,3 +21,9 @@ locals {
     short = lower("${local.st_prefix}%sst01")
   }
 }
+
+
+locals {
+  location_short = "uks"
+  prefix         = "${var.project}-${var.solution}-${var.environment}-${local.location_short}-${var.service}"
+}

@@ -2,4 +2,4 @@
 # Generic
 #########################################
 project  = "sh"
-solution = "certwatch"
+solution = "cw"

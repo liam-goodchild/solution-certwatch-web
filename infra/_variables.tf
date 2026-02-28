@@ -39,3 +39,8 @@ variable "entra_api_client_id" {
   description = "App registration client ID for the Functions API audience."
   sensitive   = true
 }
+
+variable "service" {
+  description = "Service short name for resource naming."
+  type        = string
+}
