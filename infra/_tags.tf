@@ -14,6 +14,5 @@ locals {
       Repository = "solution-certwatch-core"
       Project    = "Sky Haven"
     },
-    var.tags
   )
 }
