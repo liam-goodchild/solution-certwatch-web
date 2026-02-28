@@ -1,9 +1,3 @@
-#########################################
-# Azure Key Vault — Standard
-#########################################
-
-data "azurerm_client_config" "current" {}
-
 resource "azurerm_key_vault" "main" {
   name                = "${local.prefix}-kv-01"
   location            = var.location
@@ -18,14 +12,12 @@ resource "azurerm_key_vault" "main" {
   tags = local.tags
 }
 
-# Grant Function App identity access to read secrets
 resource "azurerm_role_assignment" "function_kv_secrets_user" {
   scope                = azurerm_key_vault.main.id
   role_definition_name = "Key Vault Secrets User"
   principal_id         = azurerm_function_app_flex_consumption.main.identity[0].principal_id
 }
 
-# Placeholder secrets for vendor API integrations (replace values post-deploy)
 resource "azurerm_key_vault_secret" "microsoft_cert_api_key" {
   name         = "microsoft-cert-api-key"
   value        = "REPLACE_ME"
