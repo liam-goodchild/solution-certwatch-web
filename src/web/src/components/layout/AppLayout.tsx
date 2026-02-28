@@ -1,9 +1,8 @@
-import { Link, Outlet, useNavigate } from 'react-router-dom';
+import { Link, Outlet } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 
 export function AppLayout() {
   const { user, loading } = useAuth();
-  const navigate = useNavigate();
 
   if (loading) return <div style={{ padding: '2rem' }}>Loading...</div>;
 

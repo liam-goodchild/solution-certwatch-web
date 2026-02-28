@@ -24,7 +24,6 @@ export function Dashboard() {
     return days >= 0 && days <= 30;
   });
   const expired = certs.filter((c) => new Date(c.expirationDate) < today);
-  const active = certs.filter((c) => new Date(c.expirationDate) >= today);
 
   return (
     <div>

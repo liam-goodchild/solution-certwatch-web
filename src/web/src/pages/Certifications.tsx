@@ -39,7 +39,7 @@ export function Certifications() {
   }
 
   async function handleSync(id: string) {
-    const result = await api.certifications.sync(id);
+    const result = await api.certifications.sync(id) as { status: string; message?: string };
     alert(result.message ?? `Sync status: ${result.status}`);
     await load();
   }
