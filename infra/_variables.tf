@@ -39,3 +39,9 @@ variable "service" {
   description = "Service short name for resource naming."
   type        = string
 }
+
+variable "entra_client_secret" {
+  type        = string
+  description = "Entra app registration client secret for SWA authentication."
+  sensitive   = true
+}

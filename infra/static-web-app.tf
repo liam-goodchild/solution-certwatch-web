@@ -11,5 +11,10 @@ resource "azurerm_static_web_app" "main" {
   sku_tier            = "Free"
   sku_size            = "Free"
 
+  app_settings = {
+    ENTRA_CLIENT_ID     = var.entra_api_client_id
+    ENTRA_CLIENT_SECRET = var.entra_client_secret
+  }
+
   tags = local.tags
 }

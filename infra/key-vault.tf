@@ -18,26 +18,8 @@ resource "azurerm_role_assignment" "function_kv_secrets_user" {
   principal_id         = azurerm_function_app_flex_consumption.main.identity[0].principal_id
 }
 
-# resource "azurerm_key_vault_secret" "microsoft_cert_api_key" {
-#   name         = "microsoft-cert-api-key"
-#   value        = "REPLACE_ME"
-#   key_vault_id = azurerm_key_vault.main.id
-
-#   depends_on = [azurerm_role_assignment.function_kv_secrets_user]
-# }
-
-# resource "azurerm_key_vault_secret" "aws_cert_api_key" {
-#   name         = "aws-cert-api-key"
-#   value        = "REPLACE_ME"
-#   key_vault_id = azurerm_key_vault.main.id
-
-#   depends_on = [azurerm_role_assignment.function_kv_secrets_user]
-# }
-
-# resource "azurerm_key_vault_secret" "comptia_cert_api_key" {
-#   name         = "comptia-cert-api-key"
-#   value        = "REPLACE_ME"
-#   key_vault_id = azurerm_key_vault.main.id
-
-#   depends_on = [azurerm_role_assignment.function_kv_secrets_user]
-# }
+resource "azurerm_role_assignment" "deployer_kv_secrets_officer" {
+  scope                = azurerm_key_vault.main.id
+  role_definition_name = "Key Vault Secrets Officer"
+  principal_id         = data.azurerm_client_config.current.object_id
+}
