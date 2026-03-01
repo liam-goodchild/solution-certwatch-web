@@ -23,7 +23,7 @@ resource "azurerm_static_web_app" "main" {
 
     # Azure Communication Services — connection string for managed functions
     ACS_CONNECTION_STRING = azurerm_communication_service.main.primary_connection_string
-    ACS_SENDER_EMAIL      = "noreply@${azurerm_email_communication_service_domain.main.mail_from_sender_domain}"
+    ACS_SENDER_EMAIL      = "DoNotReply@${azurerm_email_communication_service_domain.main.mail_from_sender_domain}"
   }
 
   tags = local.tags
