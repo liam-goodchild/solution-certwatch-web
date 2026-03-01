@@ -1,10 +1,10 @@
 import { app, InvocationContext } from '@azure/functions';
 import { v4 as uuidv4 } from 'uuid';
-import { containers } from '../../shared/db/cosmosClient';
-import { sendReminderEmail } from '../../shared/notifications/emailService';
-import { Certification } from '../../shared/models/certification';
-import { User } from '../../shared/models/user';
-import { ReminderLog } from '../../shared/models/reminder';
+import { containers } from '../shared/db/cosmosClient';
+import { sendReminderEmail } from '../shared/notifications/emailService';
+import { Certification } from '../shared/models/certification';
+import { User } from '../shared/models/user';
+import { ReminderLog } from '../shared/models/reminder';
 
 async function handler(_timer: unknown, ctx: InvocationContext): Promise<void> {
   ctx.log('Daily reminder job started');
