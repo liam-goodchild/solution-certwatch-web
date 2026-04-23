@@ -1,9 +1,5 @@
-#########################################
-# Cosmos DB — Serverless (NoSQL API)
-#########################################
-
 resource "azurerm_cosmosdb_account" "main" {
-  name                = "${local.prefix}-cosmos-01"
+  name                = "cosmos-${local.resource_suffix}"
   location            = var.location
   resource_group_name = azurerm_resource_group.main.name
   offer_type          = "Standard"
@@ -30,13 +26,13 @@ resource "azurerm_cosmosdb_account" "main" {
 }
 
 resource "azurerm_cosmosdb_sql_database" "certwatch" {
-  name                = "certwatch"
+  name                = "db-${local.resource_suffix}"
   resource_group_name = azurerm_resource_group.main.name
   account_name        = azurerm_cosmosdb_account.main.name
 }
 
 resource "azurerm_cosmosdb_sql_container" "users" {
-  name                = "users"
+  name                = "users-${local.resource_suffix}"
   resource_group_name = azurerm_resource_group.main.name
   account_name        = azurerm_cosmosdb_account.main.name
   database_name       = azurerm_cosmosdb_sql_database.certwatch.name
@@ -52,14 +48,12 @@ resource "azurerm_cosmosdb_sql_container" "users" {
 }
 
 resource "azurerm_cosmosdb_sql_container" "certifications" {
-  name                = "certifications"
+  name                = "cosmos-certifications-${local.resource_suffix}"
   resource_group_name = azurerm_resource_group.main.name
   account_name        = azurerm_cosmosdb_account.main.name
   database_name       = azurerm_cosmosdb_sql_database.certwatch.name
   partition_key_paths = ["/userId"]
-
-  # Enable TTL at container level (individual items opt-in via _ttl property)
-  default_ttl = -1
+  default_ttl         = -1
 
   indexing_policy {
     indexing_mode = "consistent"
@@ -68,7 +62,6 @@ resource "azurerm_cosmosdb_sql_container" "certifications" {
       path = "/*"
     }
 
-    # Composite index for reminder engine cross-partition query
     composite_index {
       index {
         path  = "/expirationDate"
@@ -83,14 +76,12 @@ resource "azurerm_cosmosdb_sql_container" "certifications" {
 }
 
 resource "azurerm_cosmosdb_sql_container" "reminder_logs" {
-  name                = "reminderLogs"
+  name                = "cosmos-reminder-logs-${local.resource_suffix}"
   resource_group_name = azurerm_resource_group.main.name
   account_name        = azurerm_cosmosdb_account.main.name
   database_name       = azurerm_cosmosdb_sql_database.certwatch.name
   partition_key_paths = ["/userId"]
-
-  # Auto-expire reminder log entries after 90 days
-  default_ttl = 7776000
+  default_ttl         = 7776000
 
   indexing_policy {
     indexing_mode = "consistent"
@@ -101,7 +92,6 @@ resource "azurerm_cosmosdb_sql_container" "reminder_logs" {
   }
 }
 
-# RBAC: grant Function App identity data contributor access to Cosmos DB
 resource "azurerm_cosmosdb_sql_role_assignment" "function_app" {
   resource_group_name = azurerm_resource_group.main.name
   account_name        = azurerm_cosmosdb_account.main.name

@@ -1,5 +1,5 @@
 resource "azurerm_storage_account" "functions" {
-  name                     = "${local.st_prefix}st01"
+  name                     = "st${local.resource_suffix_flat}"
   resource_group_name      = azurerm_resource_group.main.name
   location                 = var.location
   account_tier             = "Standard"
@@ -16,7 +16,7 @@ resource "azurerm_storage_container" "deployment" {
 }
 
 resource "azurerm_service_plan" "functions" {
-  name                = "${local.prefix}-asp-01"
+  name                = "asp-${local.resource_suffix}"
   resource_group_name = azurerm_resource_group.main.name
   location            = var.location
   os_type             = "Linux"
@@ -26,7 +26,7 @@ resource "azurerm_service_plan" "functions" {
 }
 
 resource "azurerm_function_app_flex_consumption" "main" {
-  name                = "${local.prefix}-func-01"
+  name                = "func-${local.resource_suffix}"
   resource_group_name = azurerm_resource_group.main.name
   location            = var.location
   service_plan_id     = azurerm_service_plan.functions.id
@@ -41,12 +41,10 @@ resource "azurerm_function_app_flex_consumption" "main" {
   site_config {}
 
   app_settings = {
-    # Cosmos DB — auth via Managed Identity (standalone FA for timer jobs)
     COSMOS_ENDPOINT = azurerm_cosmosdb_account.main.endpoint
     COSMOS_DATABASE = azurerm_cosmosdb_sql_database.certwatch.name
+    ACS_ENDPOINT    = "https://${azurerm_communication_service.main.name}.communication.azure.com"
 
-    # Azure Communication Services — auth via Managed Identity
-    ACS_ENDPOINT     = "https://${azurerm_communication_service.main.name}.communication.azure.com"
     ACS_SENDER_EMAIL = "DoNotReply@${azurerm_email_communication_service_domain.main.mail_from_sender_domain}"
   }
 
@@ -57,7 +55,6 @@ resource "azurerm_function_app_flex_consumption" "main" {
   tags = local.tags
 }
 
-# Grant Function App identity blob data access to its backing storage account
 resource "azurerm_role_assignment" "function_storage_blob" {
   scope                = azurerm_storage_account.functions.id
   role_definition_name = "Storage Blob Data Owner"

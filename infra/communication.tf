@@ -1,5 +1,5 @@
 resource "azurerm_communication_service" "main" {
-  name                = "${local.prefix}-acs-01"
+  name                = "acs-${local.resource_suffix}"
   resource_group_name = azurerm_resource_group.main.name
   data_location       = "UK"
 
@@ -7,7 +7,7 @@ resource "azurerm_communication_service" "main" {
 }
 
 resource "azurerm_email_communication_service" "main" {
-  name                = "${local.prefix}-acs-email-01"
+  name                = "acs-email-${local.resource_suffix}"
   resource_group_name = azurerm_resource_group.main.name
   data_location       = "UK"
 

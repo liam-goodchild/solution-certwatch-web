@@ -1,4 +1,4 @@
 #########################################
-# IDENTITY
+# ENVIRONMENT
 #########################################
-entra_api_client_id = "29736624-d446-41f2-b2dd-c7f5db361af8"
+environment = "dev"
