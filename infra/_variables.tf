@@ -1,6 +1,13 @@
 variable "location" {
   type        = string
   description = "Resource location for Azure resources."
+  default     = "uksouth"
+}
+
+variable "location_short" {
+  type        = string
+  description = "Short Azure region token for resource naming."
+  default     = "uks"
 }
 
 variable "environment" {
@@ -8,36 +15,33 @@ variable "environment" {
   description = "Name of Azure environment."
 }
 
-variable "project" {
+variable "workload" {
   type        = string
-  description = "Project short name."
+  description = "Workload short name for resource naming."
+  default     = "certwatch"
 }
 
-variable "solution" {
+variable "instance" {
   type        = string
-  description = "Solution short name (e.g. certwatch)."
+  description = "Instance number for resource naming."
+  default     = "01"
 }
 
-variable "entra_tenant_id" {
+variable "cloudflare_api_token" {
   type        = string
-  description = "Entra External ID tenant ID (GUID)."
+  description = "Cloudflare API token for DNS management."
   sensitive   = true
 }
 
-variable "entra_tenant_name" {
+variable "cloudflare_account_id" {
   type        = string
-  description = "Entra External ID tenant name (subdomain, e.g. mytenantname)."
+  description = "Cloudflare account ID."
 }
 
 variable "entra_api_client_id" {
   type        = string
   description = "App registration client ID for the Functions API audience."
   sensitive   = true
-}
-
-variable "service" {
-  description = "Service short name for resource naming."
-  type        = string
 }
 
 variable "entra_client_secret" {

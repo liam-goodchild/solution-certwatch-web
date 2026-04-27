@@ -1,0 +1,26 @@
+{
+  "env": {
+    "browser": true,
+    "es2021": true
+  },
+  "parserOptions": {
+    "ecmaVersion": 2021,
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "jsx": true
+    }
+  },
+  "plugins": ["react"],
+  "settings": {
+    "react": {
+      "version": "detect"
+    },
+    "n": {
+      "tryExtensions": [".ts", ".tsx", ".js", ".jsx", ".json", ".node"]
+    }
+  },
+  "rules": {
+    "react/react-in-jsx-scope": "off",
+    "n/no-missing-import": "off"
+  }
+}
