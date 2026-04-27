@@ -1,5 +1,3 @@
-#trivy:ignore:AVD-AZU-0013 - public network access intentionally allowed; restricted via RBAC
-#trivy:ignore:AVD-AZU-0016 - purge protection disabled intentionally for dev environment
 resource "azurerm_key_vault" "main" {
   name                = "kv-${local.resource_suffix}"
   location            = var.location
