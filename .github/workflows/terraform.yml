@@ -76,19 +76,6 @@ jobs:
             -backend-config="key=terraform.tfstate" \
             -backend-config="subscription_id=${{ secrets.AZURE_PLATFORM_SUBSCRIPTION_ID }}"
 
-      - name: "Remove Migrated Azure DNS Records From State"
-        run: |
-          set -euo pipefail
-
-          for address in \
-            "azurerm_dns_a_record.swa" \
-            "azurerm_dns_txt_record.swa"
-          do
-            if terraform -chdir=infra state list | grep -Fxq "$address"; then
-              terraform -chdir=infra state rm "$address"
-            fi
-          done
-
       - name: "Terraform Plan"
         if: inputs.terraform_action == 'plan' || inputs.terraform_action == ''
         env:

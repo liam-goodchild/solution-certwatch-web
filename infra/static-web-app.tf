@@ -19,10 +19,16 @@ resource "azurerm_static_web_app" "main" {
   tags = local.tags
 }
 
+resource "time_sleep" "dns_propagation" {
+  create_duration = "60s"
+
+  depends_on = [cloudflare_dns_record.swa_certwatch]
+}
+
 resource "azurerm_static_web_app_custom_domain" "certwatch" {
   static_web_app_id = azurerm_static_web_app.main.id
   domain_name       = "certwatch.skyhaven.ltd"
   validation_type   = "cname-delegation"
 
-  depends_on = [cloudflare_dns_record.swa_certwatch]
+  depends_on = [time_sleep.dns_propagation]
 }
