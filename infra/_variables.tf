@@ -27,6 +27,17 @@ variable "instance" {
   default     = "01"
 }
 
+variable "cloudflare_api_token" {
+  type        = string
+  description = "Cloudflare API token for DNS management."
+  sensitive   = true
+}
+
+variable "cloudflare_account_id" {
+  type        = string
+  description = "Cloudflare account ID."
+}
+
 variable "entra_api_client_id" {
   type        = string
   description = "App registration client ID for the Functions API audience."

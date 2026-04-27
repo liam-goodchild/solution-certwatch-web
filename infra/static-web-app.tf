@@ -18,3 +18,11 @@ resource "azurerm_static_web_app" "main" {
 
   tags = local.tags
 }
+
+resource "azurerm_static_web_app_custom_domain" "certwatch" {
+  static_web_app_id = azurerm_static_web_app.main.id
+  domain_name       = "certwatch.skyhaven.ltd"
+  validation_type   = "cname-delegation"
+
+  depends_on = [cloudflare_dns_record.swa_certwatch]
+}
