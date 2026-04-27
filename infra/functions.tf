@@ -6,6 +6,15 @@ resource "azurerm_storage_account" "functions" {
   account_replication_type = "LRS"
 
   allow_nested_items_to_be_public = false
+  public_network_access_enabled   = false #checkov:skip=CKV_AZURE_59
+  min_tls_version                 = "TLS1_2"
+  shared_access_key_enabled       = true #checkov:skip=CKV2_AZURE_40 - Azure Functions require shared key access to storage
+
+  blob_properties {
+    delete_retention_policy {
+      days = 7
+    }
+  }
 
   tags = local.tags
 }

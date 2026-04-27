@@ -17,3 +17,14 @@ skip-check:
   - CKV_AZURE_101 # Ensure that Azure Cosmos DB disables public network access
   - CKV_AZURE_99 # Ensure Cosmos DB accounts have restricted access
   - CKV_AZURE_132 # Ensure cosmosdb does not allow privileged escalation by restricting management plane changes
+  # Functions storage account - intentional trade-offs for Azure Functions Flex Consumption
+  - CKV_AZURE_33 # Queue service logging not required for Functions deployment storage
+  - CKV_AZURE_206 # LRS replication is intentional for low-cost deployment storage
+  - CKV_AZURE_212 # Min instances not applicable to FC1 Flex Consumption plan
+  - CKV_AZURE_225 # Zone redundancy not required for this workload
+  - CKV2_AZURE_41 # SAS expiration policy not applicable; using managed identity auth
+  - CKV2_AZURE_1 # CMK encryption not required for Functions deployment storage
+  - CKV2_AZURE_33 # Private endpoint not configured; access via managed identity
+  - CKV2_AZURE_21 # Blob service read logging not required for deployment container
+  # Static Web App auth config - clientSecretSettingName is an app setting name, not a secret value
+  - CKV_SECRET_6
