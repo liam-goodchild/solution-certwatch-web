@@ -1,8 +1,8 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { AppLayout } from './components/layout/AppLayout';
-import { Dashboard } from './pages/Dashboard';
-import { Certifications } from './pages/Certifications';
-import { Settings } from './pages/Settings';
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { AppLayout } from "./components/layout/AppLayout";
+import { Dashboard } from "./pages/Dashboard";
+import { Certifications } from "./pages/Certifications";
+import { Settings } from "./pages/Settings";
 
 export function App() {
   return (

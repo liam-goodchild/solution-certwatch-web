@@ -1,8 +1,8 @@
-import { CosmosClient, Container } from '@azure/cosmos';
+import { CosmosClient, Container } from "@azure/cosmos";
 
-const endpoint = process.env['COSMOS_ENDPOINT']!;
-const key = process.env['COSMOS_KEY']!;
-const databaseId = process.env['COSMOS_DATABASE'] ?? 'certwatch';
+const endpoint = process.env["COSMOS_ENDPOINT"]!;
+const key = process.env["COSMOS_KEY"]!;
+const databaseId = process.env["COSMOS_DATABASE"] ?? "certwatch";
 
 let client: CosmosClient | null = null;
 
@@ -18,7 +18,7 @@ export function getContainer(containerId: string): Container {
 }
 
 export const containers = {
-  users: () => getContainer('users'),
-  certifications: () => getContainer('certifications'),
-  reminderLogs: () => getContainer('reminderLogs'),
+  users: () => getContainer("users"),
+  certifications: () => getContainer("certifications"),
+  reminderLogs: () => getContainer("reminderLogs"),
 };

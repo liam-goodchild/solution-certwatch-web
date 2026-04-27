@@ -1,8 +1,8 @@
-import { EmailClient } from '@azure/communication-email';
-import { DefaultAzureCredential } from '@azure/identity';
+import { EmailClient } from "@azure/communication-email";
+import { DefaultAzureCredential } from "@azure/identity";
 
-const endpoint = process.env['ACS_ENDPOINT']!;
-const senderEmail = process.env['ACS_SENDER_EMAIL']!;
+const endpoint = process.env["ACS_ENDPOINT"]!;
+const senderEmail = process.env["ACS_SENDER_EMAIL"]!;
 
 let emailClient: EmailClient | null = null;
 
@@ -21,8 +21,11 @@ export interface SendReminderEmailOptions {
   daysUntilExpiry: number;
 }
 
-export async function sendReminderEmail(opts: SendReminderEmailOptions): Promise<void> {
-  const { to, certificationName, vendor, expirationDate, daysUntilExpiry } = opts;
+export async function sendReminderEmail(
+  opts: SendReminderEmailOptions,
+): Promise<void> {
+  const { to, certificationName, vendor, expirationDate, daysUntilExpiry } =
+    opts;
 
   const subject = `Certification expiring in ${daysUntilExpiry} days: ${certificationName}`;
   const html = `

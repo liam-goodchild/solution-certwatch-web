@@ -1,5 +1,5 @@
-export type CertificationVendor = 'microsoft' | 'aws' | 'comptia' | 'other';
-export type CertificationStatus = 'active' | 'expired' | 'pending' | 'unknown';
+export type CertificationVendor = "microsoft" | "aws" | "comptia" | "other";
+export type CertificationStatus = "active" | "expired" | "pending" | "unknown";
 
 export interface Certification {
   id: string;

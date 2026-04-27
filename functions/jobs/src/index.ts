@@ -1,1 +1,1 @@
-import './functions/dailyReminder';
+import "./functions/dailyReminder";

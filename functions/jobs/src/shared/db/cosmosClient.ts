@@ -1,14 +1,17 @@
-import { CosmosClient, Container } from '@azure/cosmos';
-import { DefaultAzureCredential } from '@azure/identity';
+import { CosmosClient, Container } from "@azure/cosmos";
+import { DefaultAzureCredential } from "@azure/identity";
 
-const endpoint = process.env['COSMOS_ENDPOINT']!;
-const databaseId = process.env['COSMOS_DATABASE'] ?? 'certwatch';
+const endpoint = process.env["COSMOS_ENDPOINT"]!;
+const databaseId = process.env["COSMOS_DATABASE"] ?? "certwatch";
 
 let client: CosmosClient | null = null;
 
 function getClient(): CosmosClient {
   if (!client) {
-    client = new CosmosClient({ endpoint, aadCredentials: new DefaultAzureCredential() });
+    client = new CosmosClient({
+      endpoint,
+      aadCredentials: new DefaultAzureCredential(),
+    });
   }
   return client;
 }
@@ -18,7 +21,7 @@ export function getContainer(containerId: string): Container {
 }
 
 export const containers = {
-  users: () => getContainer('users'),
-  certifications: () => getContainer('certifications'),
-  reminderLogs: () => getContainer('reminderLogs'),
+  users: () => getContainer("users"),
+  certifications: () => getContainer("certifications"),
+  reminderLogs: () => getContainer("reminderLogs"),
 };

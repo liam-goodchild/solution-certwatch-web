@@ -1,7 +1,12 @@
-import { app, HttpRequest, HttpResponseInit, InvocationContext } from '@azure/functions';
-import { validateToken } from '../../shared/auth/validateToken';
-import { containers } from '../../shared/db/cosmosClient';
-import { User, UpdateUserRequest } from '../../shared/models/user';
+import {
+  app,
+  HttpRequest,
+  HttpResponseInit,
+  InvocationContext,
+} from "@azure/functions";
+import { validateToken } from "../../shared/auth/validateToken";
+import { containers } from "../../shared/db/cosmosClient";
+import { User, UpdateUserRequest } from "../../shared/models/user";
 
 const DEFAULT_PREFERENCES = {
   emailEnabled: true,
@@ -10,7 +15,10 @@ const DEFAULT_PREFERENCES = {
   smsDaysBefore: [],
 };
 
-async function handler(req: HttpRequest, _ctx: InvocationContext): Promise<HttpResponseInit> {
+async function handler(
+  req: HttpRequest,
+  _ctx: InvocationContext,
+): Promise<HttpResponseInit> {
   try {
     const auth = await validateToken(req);
     const body = (await req.json().catch(() => ({}))) as UpdateUserRequest;
@@ -18,7 +26,9 @@ async function handler(req: HttpRequest, _ctx: InvocationContext): Promise<HttpR
     const now = new Date().toISOString();
     const container = containers.users();
 
-    const { resource: existing } = await container.item(auth.userId, auth.userId).read<User>();
+    const { resource: existing } = await container
+      .item(auth.userId, auth.userId)
+      .read<User>();
 
     const user: User = existing
       ? {
@@ -35,7 +45,10 @@ async function handler(req: HttpRequest, _ctx: InvocationContext): Promise<HttpR
           userId: auth.userId,
           email: auth.email,
           displayName: body.displayName ?? auth.displayName,
-          reminderPreferences: { ...DEFAULT_PREFERENCES, ...body.reminderPreferences },
+          reminderPreferences: {
+            ...DEFAULT_PREFERENCES,
+            ...body.reminderPreferences,
+          },
           createdAt: now,
           updatedAt: now,
         };
@@ -43,14 +56,14 @@ async function handler(req: HttpRequest, _ctx: InvocationContext): Promise<HttpR
     const { resource } = await container.items.upsert<User>(user);
     return { status: 200, jsonBody: resource };
   } catch (err: unknown) {
-    const message = err instanceof Error ? err.message : 'Unauthorized';
+    const message = err instanceof Error ? err.message : "Unauthorized";
     return { status: 401, jsonBody: { error: message } };
   }
 }
 
-app.http('updateUserProfile', {
-  methods: ['PUT'],
-  authLevel: 'anonymous',
-  route: 'v1/users/me',
+app.http("updateUserProfile", {
+  methods: ["PUT"],
+  authLevel: "anonymous",
+  route: "v1/users/me",
   handler,
 });

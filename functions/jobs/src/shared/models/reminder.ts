@@ -2,8 +2,8 @@ export interface ReminderLog {
   id: string;
   userId: string;
   certificationId: string;
-  channel: 'email' | 'sms';
+  channel: "email" | "sms";
   daysBeforeExpiry: number;
   sentAt: string;
-  status: 'sent' | 'failed';
+  status: "sent" | "failed";
 }

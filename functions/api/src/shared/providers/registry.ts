@@ -1,4 +1,4 @@
-import { ICertificationProvider } from './base';
+import { ICertificationProvider } from "./base";
 
 export interface ProviderInfo {
   vendorId: string;

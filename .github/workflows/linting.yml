@@ -39,4 +39,7 @@ jobs:
           VALIDATE_NATURAL_LANGUAGE: false
           VALIDATE_TERRAFORM_TERRASCAN: false
           VALIDATE_BIOME_LINT: false
+          VALIDATE_TRIVY: false
+          VALIDATE_TSX: false
+          VALIDATE_TYPESCRIPT_ESLINT: false
           DEFAULT_BRANCH: main

@@ -4,7 +4,7 @@ export interface ValidationResult {
 }
 
 export interface CertStatus {
-  status: 'active' | 'expired' | 'pending' | 'unknown';
+  status: "active" | "expired" | "pending" | "unknown";
   expirationDate?: string;
   lastVerified: string;
 }

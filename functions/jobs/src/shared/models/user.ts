@@ -15,10 +15,10 @@ export interface User {
   updatedAt: string;
   // Reserved for future multi-tenant support
   tenantId?: string | null;
-  role?: 'user' | 'admin' | 'org-admin';
+  role?: "user" | "admin" | "org-admin";
 }
 
-export type UserProfileResponse = Omit<User, 'tenantId'>;
+export type UserProfileResponse = Omit<User, "tenantId">;
 
 export interface UpdateUserRequest {
   displayName?: string;
