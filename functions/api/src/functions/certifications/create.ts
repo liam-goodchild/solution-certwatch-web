@@ -12,7 +12,13 @@ import {
   CreateCertificationRequest,
 } from "../../shared/models/certification";
 
-const VALID_VENDORS = ["microsoft", "aws", "comptia", "other"] as const;
+const VALID_VENDORS = [
+  "microsoft",
+  "aws",
+  "comptia",
+  "hashicorp",
+  "other",
+] as const;
 
 async function handler(
   req: HttpRequest,
@@ -54,6 +60,7 @@ async function handler(
       vendorCertId: body.vendorCertId ?? null,
       expirationDate: body.expirationDate,
       status: new Date(body.expirationDate) < new Date() ? "expired" : "active",
+      source: "manual",
       syncEnabled: false,
       lastSyncedAt: null,
       createdAt: now,
