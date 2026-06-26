@@ -1,23 +1,31 @@
 import { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import { api } from "../services/api";
 import {
   Certification,
   CreateCertificationRequest,
 } from "../types/certification";
+import type { UserProfile } from "../types/user";
 import { CertCard } from "../components/certifications/CertCard";
 import { CertForm } from "../components/certifications/CertForm";
 
 export function Certifications() {
   const [certs, setCerts] = useState<Certification[]>([]);
+  const [profile, setProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
+  const [syncing, setSyncing] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [editing, setEditing] = useState<Certification | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   async function load() {
     try {
-      const data = await api.certifications.list();
+      const [data, prof] = await Promise.all([
+        api.certifications.list(),
+        api.users.getProfile().catch(() => null),
+      ]);
       setCerts(data);
+      setProfile(prof);
       setError(null);
     } catch (err) {
       setError(
@@ -29,6 +37,22 @@ export function Certifications() {
   useEffect(() => {
     load().finally(() => setLoading(false));
   }, []);
+
+  async function handleSyncNow() {
+    try {
+      setError(null);
+      setSyncing(true);
+      const result = await api.certifications.sync();
+      await load();
+      alert(
+        `Credly sync complete. Created ${result.created}, updated ${result.updated}.`,
+      );
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Credly sync failed");
+    } finally {
+      setSyncing(false);
+    }
+  }
 
   async function handleCreate(data: CreateCertificationRequest) {
     try {
@@ -70,21 +94,9 @@ export function Certifications() {
     }
   }
 
-  async function handleSync(id: string) {
-    try {
-      setError(null);
-      const result = (await api.certifications.sync(id)) as {
-        status: string;
-        message?: string;
-      };
-      alert(result.message ?? `Sync status: ${result.status}`);
-      await load();
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Sync failed");
-    }
-  }
-
   if (loading) return <p>Loading...</p>;
+
+  const credlyLinked = !!profile?.credlyUsername;
 
   return (
     <div>
@@ -129,6 +141,64 @@ export function Certifications() {
         </div>
       )}
 
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          gap: "1rem",
+          padding: "0.75rem 1rem",
+          marginBottom: "1.5rem",
+          background: "#eef2ff",
+          border: "1px solid #c7d2fe",
+          borderRadius: "8px",
+          fontSize: "0.875rem",
+        }}
+      >
+        <div style={{ color: "#3730a3" }}>
+          {credlyLinked ? (
+            <>
+              Linked to Credly as <strong>{profile?.credlyUsername}</strong>
+              {profile?.credlyLastSyncedAt && (
+                <>
+                  {" "}
+                  · last synced{" "}
+                  {new Date(profile.credlyLastSyncedAt).toLocaleString()}
+                </>
+              )}
+            </>
+          ) : (
+            <>Connect Credly to auto-import your AWS, CompTIA and HashiCorp badges.</>
+          )}
+        </div>
+        <div style={{ display: "flex", gap: "0.5rem", flexShrink: 0 }}>
+          {credlyLinked && (
+            <button
+              onClick={handleSyncNow}
+              disabled={syncing}
+              style={{
+                padding: "0.3rem 0.75rem",
+                cursor: syncing ? "default" : "pointer",
+              }}
+            >
+              {syncing ? "Syncing..." : "Sync now"}
+            </button>
+          )}
+          <Link
+            to="/credly"
+            style={{
+              padding: "0.3rem 0.75rem",
+              background: "#1a1a2e",
+              color: "#fff",
+              borderRadius: "4px",
+              textDecoration: "none",
+            }}
+          >
+            {credlyLinked ? "Manage" : "Connect Credly"}
+          </Link>
+        </div>
+      </div>
+
       {(showForm || editing) && (
         <div
           style={{
@@ -166,7 +236,6 @@ export function Certifications() {
             cert={cert}
             onEdit={setEditing}
             onDelete={handleDelete}
-            onSync={handleSync}
           />
         ))}
       </div>

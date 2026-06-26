@@ -2,6 +2,8 @@ import type {
   Certification,
   CreateCertificationRequest,
   UpdateCertificationRequest,
+  CredlyPreviewResponse,
+  CredlySyncResponse,
 } from "../types/certification";
 import type { UserProfile, ReminderPreferences } from "../types/user";
 
@@ -50,9 +52,20 @@ export const api = {
       }),
     remove: (id: string) =>
       request<void>(`/certifications/${id}`, { method: "DELETE" }),
-    sync: (id: string) =>
-      request<{ status: string }>(`/certifications/${id}/sync`, {
+    // Per-user Credly sync. Pass a username to link/relink ("Link & import");
+    // omit it to sync the already-linked profile ("Sync now").
+    sync: (username?: string) =>
+      request<CredlySyncResponse>("/certifications/sync", {
         method: "POST",
+        body: JSON.stringify(username ? { username } : {}),
+      }),
+  },
+
+  credly: {
+    preview: (username: string) =>
+      request<CredlyPreviewResponse>("/credly/preview", {
+        method: "POST",
+        body: JSON.stringify({ username }),
       }),
   },
 
