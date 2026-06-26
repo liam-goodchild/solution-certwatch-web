@@ -23,9 +23,3 @@ resource "azurerm_cosmosdb_sql_role_assignment" "function_app" {
   principal_id        = azurerm_function_app_flex_consumption.main.identity[0].principal_id
   scope               = azurerm_cosmosdb_account.main.id
 }
-
-resource "azurerm_role_assignment" "function_acs_contributor" {
-  scope                = azurerm_communication_service.main.id
-  role_definition_name = "Contributor"
-  principal_id         = azurerm_function_app_flex_consumption.main.identity[0].principal_id
-}
