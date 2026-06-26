@@ -61,6 +61,11 @@ export const api = {
         method: "POST",
         body: JSON.stringify({ username }),
       }),
+    // Unlinks the Credly profile and removes all certs imported from it.
+    unlink: () =>
+      request<{ status: string; removed: number }>("/credly/unlink", {
+        method: "POST",
+      }),
   },
 
   reminders: {

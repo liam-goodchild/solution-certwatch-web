@@ -17,6 +17,7 @@ import "./functions/certifications/update";
 import "./functions/certifications/remove";
 import "./functions/certifications/sync";
 import "./functions/credly/preview";
+import "./functions/credly/unlink";
 import "./functions/reminders/getPreferences";
 import "./functions/reminders/updatePreferences";
 import "./functions/reminders/testNotification";

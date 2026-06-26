@@ -53,6 +53,25 @@ export function Certifications() {
     }
   }
 
+  async function handleUnlink() {
+    if (
+      !confirm(
+        "Unlink your Credly profile? This removes all certifications imported from it.",
+      )
+    )
+      return;
+    try {
+      setError(null);
+      setSyncing(true);
+      await api.credly.unlink();
+      await load();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Failed to unlink Credly");
+    } finally {
+      setSyncing(false);
+    }
+  }
+
   // Editing remains for any legacy manually-added certs; Credly-sourced certs
   // are read-only (CertCard hides the Edit button for them).
   async function handleUpdate(data: CreateCertificationRequest) {
@@ -153,6 +172,17 @@ export function Certifications() {
             >
               Manage
             </Link>
+            <button
+              onClick={handleUnlink}
+              disabled={syncing}
+              style={{
+                padding: "0.3rem 0.75rem",
+                color: "#dc2626",
+                cursor: syncing ? "default" : "pointer",
+              }}
+            >
+              Unlink
+            </button>
           </div>
         </div>
       ) : (
